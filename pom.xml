@@ -10,12 +10,12 @@
         <!-- lookup parent from repository -->
     </parent>
     <groupId>com.spring</groupId>
-    <artifactId>backend</artifactId>
+    <artifactId>printFlow</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backend</name>
-    <description>Backend</description>
+    <name>printFlow</name>
+    <description>printFlow</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
