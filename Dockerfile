@@ -1,9 +1,9 @@
-FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-ARG JAVA_OPTS
-ENV JAVA_OPTS=$JAVA_OPTS
-COPY target/printFlow-0.0.1-SNAPSHOT.jar printflow.jar
+
+FROM maven:3.8.5-openjdk-17 AS build
+COPY . .
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17.0.1-jdk-slim
+COPY --from=build /target/printflow-0.0.1-SNAPSHOT.jar printflow.jar
 EXPOSE 8080
-ENTRYPOINT exec java $JAVA_OPTS -jar printflow.jar
-# For Spring-Boot project, use the entrypoint below to reduce Tomcat startup time.
-#ENTRYPOINT exec java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar printflow.jar
+ENTRYPOINT ["java","-jar","printflow.jar"]
