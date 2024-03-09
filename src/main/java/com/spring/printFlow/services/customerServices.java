@@ -98,4 +98,9 @@ public class customerServices {
       return FeedBackRepository.save(feedback);
    }
 
+
+   public List<Feedback> getAllFeedback() {
+        return FeedBackRepository.findAll();
+    }
+
 }

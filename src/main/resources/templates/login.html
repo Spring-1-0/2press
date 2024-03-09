@@ -83,14 +83,14 @@
                         timer: 3000,
                         timerProgressBar: true,
                         didOpen: (toast) => {
-                          toast.onmouseenter = Swal.stopTimer;
-                          toast.onmouseleave = Swal.resumeTimer;
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
                         }
-                      });
-                      Toast.fire({
+                    });
+                    Toast.fire({
                         icon: "success",
                         title: "Signed in successfully"
-                      });
+                    });
 
                     setTimeout(function () {
                         window.location.href = "/dashboard/home";
@@ -103,14 +103,55 @@
                     //console.error("Error loggin user:", errorThrown);
                     if (xhr.status === 404) {
 
-                        swal("Oops!", xhr.responseText, "error");
-
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: "Invalid credentials, please try again"
+                        });
                     } else if (xhr.status === 401 || xhr.status === 400) {
 
-                        swal("Oops!", xhr.responseText, "error");
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: "Invalid credentials, please try again"
+                        });
 
                     } else if (xhr.status === 500 || xhr.status === 501) {
-                        swal("Oops!", xhr.responseText, "error");
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: "Internal server error"
+                        });
 
                     }
                 }

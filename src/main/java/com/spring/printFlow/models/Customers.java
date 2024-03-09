@@ -23,7 +23,7 @@ public class Customers {
       this.name = name;
       this.tel = tel;
       this.refId = refId;
-      this.fileUrl = "1707729273805_Screenshot 2023-11-19 171047.png";
+      this.fileUrl = "1709998590328_avatar-wrap.png";
       this.createdAt = new Date();
    }
 

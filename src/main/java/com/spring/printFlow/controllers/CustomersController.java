@@ -276,4 +276,20 @@ public class CustomersController {
       }
    }
 
+
+       @GetMapping("/feedback/fetch")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            List<Feedback> feedback = customerServices.getAllFeedback();
+            return ResponseEntity.ok().body(feedback);
+        } catch (Exception error) {
+            LOGGER.error("Error fetching feedbacks: {}", error.getMessage(), error);
+            // Return an error response with a message
+            error.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something happened  fetching users: ");
+
+        }
+    }
+
 }

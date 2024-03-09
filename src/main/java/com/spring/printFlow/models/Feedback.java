@@ -5,6 +5,8 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Document(collection = "feedbacks")
 
 public class Feedback {
@@ -12,13 +14,14 @@ public class Feedback {
    private String _id;
    private String name;
    private String message;
+   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
    private Date createdAt;
    private String fileUrl;
 
    public Feedback(String name, String message) {
       this.name = name;
       this.message = message;
-      this.fileUrl = "1707729273805_Screenshot 2023-11-19 171047.png";
+      this.fileUrl = "1709998590328_avatar-wrap.png";
       this.createdAt = new Date();
    }
 
