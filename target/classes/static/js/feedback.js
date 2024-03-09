@@ -1,0 +1,129 @@
+const formData = new FormData();
+
+// Function to format date in YYYY-MM-DD HH:mm:ss format
+function formatDate(dateString) {
+   var date = new Date(dateString);
+   var year = date.getFullYear();
+   var month = String(date.getMonth() + 1).padStart(2, '0');
+   var day = String(date.getDate()).padStart(2, '0');
+   return year + '-' + month + '-' + day;
+}
+
+
+function fetchUsers() {
+   $.ajax({
+      type: "GET",
+      url: "/api/customers/feedback/fetch",
+      success: function (feebacks) {
+
+         $("#myTable tbody").empty();
+
+         feebacks.forEach(function (user, index) {
+            var row = $("<tr>");
+            row.append("<td>" + (index + 1) + "</td>");
+            row.append($("<td>").text(user.name));
+            row.append($("<td>").text(user.message));
+            // Create a button with a data attribute to store the _id
+            var buttondel = $("<button>").html('<i class="fa fa-trash"></i>').addClass("del-btn").attr("data-id", user._id).attr("title", "Delete");
+
+            // Attach a click event handler to the button
+            buttondel.click(function () {
+               // Retrieve the _id from the data attribute
+               var _id = $(this).data("id");
+
+               const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                     confirmButton: "btn btn-success",
+                     cancelButton: "btn btn-danger"
+                  },
+                  buttonsStyling: false
+               });
+               swalWithBootstrapButtons.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to revert this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Yes",
+                  cancelButtonText: "No",
+                  reverseButtons: true
+               }).then((result) => {
+                  if (result.isConfirmed) {
+
+                     fetch(`/api/users/delete?_id=${_id}`, {
+                        method: 'DELETE',
+                     })
+                        .then(response => {
+                           // Check if the request was successful (status code 200-299)
+                           if (response.ok) {
+                              const Toast = Swal.mixin({
+                                 toast: true,
+                                 position: "top-end",
+                                 showConfirmButton: false,
+                                 timer: 4000,
+                                 timerProgressBar: true,
+                                 didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                 }
+                              });
+                              Toast.fire({
+                                 icon: "success",
+                                 title: "User deleted successfully"
+                              });
+
+                              fetchUsers();
+                           } else {
+
+                              swalWithBootstrapButtons.fire({
+                                 title: "Error",
+                                 text: "Error occurred while deleting user",
+                                 icon: "error"
+                              });
+
+                           }
+                        })
+                        .catch(error => {
+                           swalWithBootstrapButtons.fire({
+                              title: "Cancelled",
+                              text: "user is not deleted successfully, Please try again",
+                              icon: "error"
+                           });
+                        });
+
+
+                  } else if (
+                     /* Read more about handling dismissals below */
+                     result.dismiss === Swal.DismissReason.cancel
+                  ) {
+                     swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your user is safe :)",
+                        icon: "error"
+                     });
+                  }
+               });
+
+
+            });
+
+            // Append the button to the row
+            row.append($("<td>").append(buttondel));
+
+            // Append the row to the table
+            $("#myTable tbody").append(row);
+         });
+      },
+      error: function (xhr, textStatus, errorThrown) {
+         // Handle error responses
+         if (xhr.status === 400 || xhr.status === 500) {
+            swal("Oops!", "Somthing happened , try again", "error");
+         } else {
+            swal("Oops!", "An unexpected error occurred.", "error");
+         }
+      }
+   });
+}
+
+$(document).ready(function () {
+   fetchUsers();
+});
