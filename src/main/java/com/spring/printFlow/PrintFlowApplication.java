@@ -5,6 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan("com.spring.printFlow.controllers")
+@ComponentScan("com.spring.printFlow.repository")
+@ComponentScan("com.spring.printFlow.models")
+@ComponentScan("com.spring.printFlow.dataBaseServices")
+@ComponentScan("com.spring.printFlow.services")
+@ComponentScan("com.spring.printFlow.config")
 @SpringBootApplication
 public class PrintFlowApplication {
 
