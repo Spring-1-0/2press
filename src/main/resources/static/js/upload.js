@@ -437,12 +437,6 @@ async function feedback() {
                icon: "success",
                title: "Feedback sent successfully"
             });
-
-            setTimeout(() => {
-               window.location.reload();
-            }, 2000);
-
-
          },
          error: function (xhr, textStatus, errorThrown) {
 
