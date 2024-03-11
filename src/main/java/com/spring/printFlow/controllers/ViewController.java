@@ -40,4 +40,10 @@ public class ViewController {
       return "feedback";
    }
 
+   @GetMapping("/dashboard/report")
+   public String report() {
+      return "report";
+   }
+
+
 }

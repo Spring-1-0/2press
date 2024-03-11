@@ -17,7 +17,8 @@
   overflow-y: auto;
 }
 
-#myTable {
+#myTable,
+#customers {
   border-collapse: collapse;
   width: 100%;
   border: 1px solid #ddd;
@@ -25,7 +26,8 @@
   background: #fff;
 }
 
-#myTable tr.header {
+#myTable tr.header,
+#customers tr.header {
   background-color: #f1f1f1;
   position: sticky;
   top: 0;
@@ -59,4 +61,36 @@
 #myTable tr.header,
 #myTable tr:hover {
   background-color: #f1f1f1;
+}
+
+#customers {
+  font-family: Arial, sans-serif;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#customers th,
+#customers td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+#customers th:last-child,
+#customers td:last-child {
+  text-align: center;
+  border-right: none;
+}
+
+#customers tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#customers tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#customers tbody tr:hover {
+  background-color: #ddd;
 }

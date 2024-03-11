@@ -38,7 +38,7 @@ function fetchCustomers() {
 
          // Function to get preview HTML based on file type
          function getFilePreviewHTML(fileUrl) {
-            return '<img src="/api/files/fetch?filename=' + encodeURIComponent(fileUrl) + '" alt="" class="img"  style="border-radius: 100px">';
+            return '<img src="' + fileUrl + '" alt="" class="img"  style="border-radius: 100px">';
 
          }
 

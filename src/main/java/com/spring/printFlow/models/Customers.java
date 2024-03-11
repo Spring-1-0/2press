@@ -23,7 +23,7 @@ public class Customers {
       this.name = name;
       this.tel = tel;
       this.refId = refId;
-      this.fileUrl = "1709998590328_avatar-wrap.png";
+      this.fileUrl = "https://cdn-icons-png.flaticon.com/256/149/149071.png";
       this.createdAt = new Date();
    }
 

@@ -18,6 +18,7 @@ public class File {
    private Float price;
    private long copies;
    private String color;
+   private String message;
    private Date createdAt;
    private Date operatedAt;
 
@@ -27,7 +28,7 @@ public class File {
 
    public File(String name, String status, String cusRefId,
          String type, long pages, String activity, Float price,
-         Long copies, String color) {
+         Long copies, String color, String message) {
       this.name = name;
       this.cusRefId = cusRefId;
       this.type = type;
@@ -37,6 +38,7 @@ public class File {
       this.price = price;
       this.copies = copies;
       this.color = color;
+      this.message = message;
       this.createdAt = new Date();
       this.operatedAt = new Date();
    }
@@ -135,6 +137,14 @@ public class File {
 
    public String setColor(String color) {
       return color;
+   }
+
+   public String getMessage() {
+      return message;
+   }
+
+   public String setMessage(String message) {
+      return message;
    }
 
 }

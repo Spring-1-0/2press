@@ -51,7 +51,7 @@ public class CustomersController {
          @RequestParam("name") String name,
          @RequestParam("activity") String activity,
          @RequestParam("copies") Long copies,
-         @RequestParam("color") String color) {
+         @RequestParam("color") String color ,@RequestParam("message") String message ) {
       // Log info
       LOGGER.info("Controller: Saving users...");
       try {
@@ -86,7 +86,7 @@ public class CustomersController {
 
                Files.copy(file.getInputStream(), Paths.get(uploadDir, fileName), StandardCopyOption.REPLACE_EXISTING);
 
-               File fileData = new File(fileName, "Pending", refId, ext, 10, activity, (float) 90, copies, color);
+               File fileData = new File(fileName, "Pending", refId, ext, 10, activity, (float) 90, copies, color , message);
 
                customerServices.saveFile(fileData);
 

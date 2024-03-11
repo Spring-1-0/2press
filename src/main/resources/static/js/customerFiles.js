@@ -82,7 +82,7 @@ function fetchCustomers() {
             var extension = fileUrl.split('.').pop().toLowerCase();
 
             if (extension === 'pdf' || extension === 'doc' || extension === 'docx') {
-               return '<img width="30px" height="30px" src="/api/files/fetch?filename=pdf.png" >';
+               return '<img width="30px" height="30px" src="/api/files/fetch?filename=1708202239534_download.jpeg" >';
             } else {
                return '<img src="/api/files/fetch?filename=' + encodeURIComponent(fileUrl) + '" alt="">';
             }
@@ -113,7 +113,7 @@ function fetchCustomersFiles() {
                $('#myTable tbody').empty(); // Clear existing table rows
                files.forEach(function (file, index) {
                   // Create a new row for each file
-                  var row = $("<tr>");
+                  var row = $("<tr>").attr("title", file.message);
                   // Add index number
 
                   // Add file name

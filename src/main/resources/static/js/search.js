@@ -56,3 +56,5 @@ function filterCustomersByName() {
 
 // Attach event listener to search input
 document.getElementById("search-input").addEventListener("input", filterCustomersByName);
+
+

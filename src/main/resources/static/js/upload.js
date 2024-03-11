@@ -193,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
    }
 
+
    function unzipFile(zipFile) {
       // Add your unzip logic here
       // For simplicity, let's assume it returns an array of file blobs
@@ -205,6 +206,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
    }
 });
+async function addMessage() {
+   const { value: text } = await Swal.fire({
+      input: "textarea",
+      inputLabel: "Message",
+      inputPlaceholder: "Type your message here...",
+      inputAttributes: {
+         "aria-label": "Type your message here"
+      },
+      showCancelButton: true
+   });
+   if (text) {
+      // Swal.fire(text);
+      formData.append('message', text);
+   }
+}
 
 
 async function color() {
@@ -361,9 +377,39 @@ submitButton.addEventListener('click', async () => {
             },
             error: function (xhr, textStatus, errorThrown) {
                if (xhr.status >= 400 && xhr.status <= 499) {
-                  swal("Oops!", "Files not sent successfully, Please try again", "error");
+                  const Toast = Swal.mixin({
+                     toast: true,
+                     position: "top-end",
+                     showConfirmButton: false,
+                     timer: 4000,
+                     timerProgressBar: true,
+                     didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                     }
+                  });
+                  Toast.fire({
+                     icon: "error",
+                     title: "Files not sent successfully, Please try again"
+                  });
+
                } else if (xhr.status >= 500) {
-                  swal("Oops!", "Something happened, please try again.", "error");
+                  const Toast = Swal.mixin({
+                     toast: true,
+                     position: "top-end",
+                     showConfirmButton: false,
+                     timer: 4000,
+                     timerProgressBar: true,
+                     didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                     }
+                  });
+                  Toast.fire({
+                     icon: "error",
+                     title: "Something happened, please try again."
+                  });
+
                }
             }
          });
@@ -437,12 +483,6 @@ async function feedback() {
                icon: "success",
                title: "Feedback sent successfully"
             });
-
-            setTimeout(() => {
-               window.location.reload();
-            }, 2000);
-
-
          },
          error: function (xhr, textStatus, errorThrown) {
 
