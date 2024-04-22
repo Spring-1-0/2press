@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("com.spring.printFlow.dataBaseServices")
 @ComponentScan("com.spring.printFlow.services")
 @ComponentScan("com.spring.printFlow.config")
+@ComponentScan("com.spring.printFlow.components")
 @SpringBootApplication
 public class PrintFlowApplication {
 

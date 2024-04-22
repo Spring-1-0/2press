@@ -28,7 +28,9 @@ import com.spring.printFlow.models.ActionTypes;
 import com.spring.printFlow.models.Customers;
 import com.spring.printFlow.models.Feedback;
 import com.spring.printFlow.models.File;
+import com.spring.printFlow.models.Sales;
 import com.spring.printFlow.services.customerServices;
+import com.spring.printFlow.services.reportServices;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -37,10 +39,12 @@ public class CustomersController {
    private static final Logger LOGGER = LoggerFactory.getLogger(customerServices.class);
 
    private final customerServices customerServices;
+   private final reportServices reportServices;
 
-   public CustomersController(customerServices customerServices) {
+   public CustomersController(customerServices customerServices, reportServices reportServices) {
 
       this.customerServices = customerServices;
+      this.reportServices = reportServices;
 
    }
 
@@ -51,12 +55,14 @@ public class CustomersController {
          @RequestParam("name") String name,
          @RequestParam("activity") String activity,
          @RequestParam("copies") Long copies,
-         @RequestParam("color") String color ,@RequestParam("message") String message ) {
+         @RequestParam("color") String color, @RequestParam("message") String message) {
       // Log info
       LOGGER.info("Controller: Saving users...");
       try {
          List<String> successfulUploads = new ArrayList<>();
          String refId = Random();
+
+         String status = "pending";
 
          for (MultipartFile file : files) {
             if (!file.isEmpty() && ValidationController.isImageFile(file.getOriginalFilename())) {
@@ -71,7 +77,6 @@ public class CustomersController {
                      Files.createDirectories(uploadPath);
                   } catch (IOException error) {
                      // Handle the exception (e.g., log it)
-                     LOGGER.error("Error uploading files: {}", error.getMessage(), error);
                      error.printStackTrace();
 
                      // Return an error response
@@ -86,7 +91,8 @@ public class CustomersController {
 
                Files.copy(file.getInputStream(), Paths.get(uploadDir, fileName), StandardCopyOption.REPLACE_EXISTING);
 
-               File fileData = new File(fileName, "Pending", refId, ext, 10, activity, (float) 90, copies, color , message);
+               File fileData = new File(fileName, status, refId, ext, 10, activity, (float) 90, copies, color,
+                     message);
 
                customerServices.saveFile(fileData);
 
@@ -101,6 +107,10 @@ public class CustomersController {
             Customers customers = new Customers(name, tel, refId);
             // Send user data to userService for saving
             customerServices.saveCustomer(customers);
+
+            Sales sale = new Sales(status, activity, (float) 90, customers.getname(), customers.get_id());
+
+            reportServices.saveSales(sale);
             // Return a success response with the list of uploaded file names
             return ResponseEntity.ok().body("Files uploaded successfully: ");
          } else {
@@ -198,6 +208,22 @@ public class CustomersController {
       }
    }
 
+   @GetMapping("/files")
+   public ResponseEntity<?> getAllCustomerFiles() {
+
+      try {
+         List<File> customers = customerServices.getAllCustomerFiles();
+         return ResponseEntity.ok().body(customers);
+      } catch (Exception error) {
+         LOGGER.error("Error fetching customers files: {}", error.getMessage(), error);
+         // Return an error response with a message
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened  fetching customers files: ");
+
+      }
+   }
+
    @GetMapping("/action-types")
    public ResponseEntity<?> getAllActionTypes() {
       try {
@@ -276,20 +302,31 @@ public class CustomersController {
       }
    }
 
+   @GetMapping("/feedback/fetch")
+   public ResponseEntity<?> getAllUsers() {
+      try {
+         List<Feedback> feedback = customerServices.getAllFeedback();
+         return ResponseEntity.ok().body(feedback);
+      } catch (Exception error) {
+         LOGGER.error("Error fetching feedbacks: {}", error.getMessage(), error);
+         // Return an error response with a message
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened  fetching users: ");
 
-       @GetMapping("/feedback/fetch")
-    public ResponseEntity<?> getAllUsers() {
-        try {
-            List<Feedback> feedback = customerServices.getAllFeedback();
-            return ResponseEntity.ok().body(feedback);
-        } catch (Exception error) {
-            LOGGER.error("Error fetching feedbacks: {}", error.getMessage(), error);
-            // Return an error response with a message
-            error.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Something happened  fetching users: ");
+      }
+   }
 
-        }
-    }
+   @DeleteMapping("/feedback/delete")
+   public ResponseEntity<?> feedbackDeleteById(@RequestParam(name = "_id") String _id) {
+      try {
+         customerServices.deleteFeedbackById(_id);
+         return ResponseEntity.ok().body("feedback deleted successfully");
+      } catch (Exception error) {
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened deleting feedback, Please try again");
+      }
+   }
 
 }

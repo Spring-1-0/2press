@@ -8,14 +8,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.spring.printFlow.models.User;
 import com.spring.printFlow.repository.UserRepository;
 
-@SuppressWarnings("null")
 @Service
 public class userService {
     @Autowired
     private final UserRepository userRepository;
+    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(userService.class);
 
     // create instance of the user repository
@@ -60,4 +62,5 @@ public class userService {
         return userRepository.findByUsermail(usermail);
     }
 
+   
 }

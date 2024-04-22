@@ -12,19 +12,23 @@ public class Sales {
    private String status;
    private Float amount;
    private String activity;
+   private String customer;
    private Date createdAt;
    private Date operatedAt;
+   private String cusRefId;
 
    public Sales() {
 
    }
 
-   public Sales(String status, String activity, Float amount) {
+   public Sales(String status, String activity, Float amount, String customer ,String cusRefId) {
       this.status = status;
       this.activity = activity;
       this.amount = amount;
+      this.customer = customer;
       this.createdAt = new Date();
       this.operatedAt = new Date();
+      this.cusRefId = cusRefId;
    }
 
    public String get_id() {
@@ -34,7 +38,6 @@ public class Sales {
    public void set_id(String _id) {
       this._id = _id;
    }
-
 
    public String getStatus() {
       return status;
@@ -64,8 +67,25 @@ public class Sales {
       return activity;
    }
 
+
+   public String getcusRefId() {
+      return cusRefId;
+   }
+
+   public void setfefId(String cusRefId) {
+      this.cusRefId = cusRefId;
+   }
+
    public void setActivity(String activity) {
       this.activity = activity;
+   }
+
+   public String getCustomer() {
+      return customer;
+   }
+
+   public void setCustomer(String customer) {
+      this.customer = customer;
    }
 
    public Float getamount() {
@@ -75,7 +95,5 @@ public class Sales {
    public Float setamount(Float amount) {
       return this.amount = amount;
    }
-
-
 
 }

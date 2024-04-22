@@ -1,5 +1,5 @@
 const formData = new FormData();
-
+const feddback_token = localStorage.getItem('token');
 // Function to format date in YYYY-MM-DD HH:mm:ss format
 function formatDate(dateString) {
    var date = new Date(dateString);
@@ -10,10 +10,14 @@ function formatDate(dateString) {
 }
 
 
-function fetchUsers() {
+function fetchFeedbacks() {
    $.ajax({
       type: "GET",
       url: "/api/customers/feedback/fetch",
+      headers: {
+         'Authorization': `Bearer ${feddback_token}`,
+         'Content-Type': 'application/json'
+      },
       success: function (feebacks) {
 
          $("#myTable tbody").empty();
@@ -28,9 +32,6 @@ function fetchUsers() {
 
             // Attach a click event handler to the button
             buttondel.click(function () {
-               // Retrieve the _id from the data attribute
-               var _id = $(this).data("id");
-
                const swalWithBootstrapButtons = Swal.mixin({
                   customClass: {
                      confirmButton: "btn btn-success",
@@ -49,8 +50,12 @@ function fetchUsers() {
                }).then((result) => {
                   if (result.isConfirmed) {
 
-                     fetch(`/api/users/delete?_id=${_id}`, {
+                     fetch(`/api/customers/feedback/delete?_id=${user._id}`, {
                         method: 'DELETE',
+                        headers: {
+                           'Authorization': `Bearer ${feddback_token}`,
+                           'Content-Type': 'application/json'
+                        },
                      })
                         .then(response => {
                            // Check if the request was successful (status code 200-299)
@@ -68,15 +73,15 @@ function fetchUsers() {
                               });
                               Toast.fire({
                                  icon: "success",
-                                 title: "User deleted successfully"
+                                 title: "Feedback deleted successfully"
                               });
 
-                              fetchUsers();
+                              fetchFeedbacks();
                            } else {
 
                               swalWithBootstrapButtons.fire({
                                  title: "Error",
-                                 text: "Error occurred while deleting user",
+                                 text: "Error occurred while deleting feedback",
                                  icon: "error"
                               });
 
@@ -85,7 +90,7 @@ function fetchUsers() {
                         .catch(error => {
                            swalWithBootstrapButtons.fire({
                               title: "Cancelled",
-                              text: "user is not deleted successfully, Please try again",
+                              text: "feedback is not deleted successfully, Please try again",
                               icon: "error"
                            });
                         });
@@ -125,5 +130,5 @@ function fetchUsers() {
 }
 
 $(document).ready(function () {
-   fetchUsers();
+   fetchFeedbacks();
 });

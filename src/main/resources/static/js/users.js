@@ -1,5 +1,5 @@
 const formData = new FormData();
-
+const user_token = localStorage.getItem('token');
 // Function to format date in YYYY-MM-DD HH:mm:ss format
 function formatDate(dateString) {
    var date = new Date(dateString);
@@ -14,6 +14,9 @@ function fetchUsers() {
    $.ajax({
       type: "GET",
       url: "/api/users/fetch",
+      headers: {
+         'Authorization': `Bearer ${user_token}`,
+      },
       success: function (users) {
 
          $("#myTable tbody").empty();
@@ -64,6 +67,9 @@ function fetchUsers() {
 
                      fetch(`/api/users/delete?_id=${_id}`, {
                         method: 'DELETE',
+                        headers: {
+                           'Authorization': `Bearer ${user_token}`,
+                       },
                      })
                         .then(response => {
                            // Check if the request was successful (status code 200-299)
@@ -96,10 +102,20 @@ function fetchUsers() {
                            }
                         })
                         .catch(error => {
-                           swalWithBootstrapButtons.fire({
-                              title: "Cancelled",
-                              text: "user is not deleted successfully, Please try again",
-                              icon: "error"
+                           const Toast = Swal.mixin({
+                              toast: true,
+                              position: "top-end",
+                              showConfirmButton: false,
+                              timer: 4000,
+                              timerProgressBar: true,
+                              didOpen: (toast) => {
+                                 toast.onmouseenter = Swal.stopTimer;
+                                 toast.onmouseleave = Swal.resumeTimer;
+                              }
+                           });
+                           Toast.fire({
+                              icon: "warning",
+                              title: "No action occurred",
                            });
                         });
 
@@ -108,10 +124,20 @@ function fetchUsers() {
                      /* Read more about handling dismissals below */
                      result.dismiss === Swal.DismissReason.cancel
                   ) {
-                     swalWithBootstrapButtons.fire({
-                        title: "Cancelled",
-                        text: "Your user is safe :)",
-                        icon: "error"
+                     const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                           toast.onmouseenter = Swal.stopTimer;
+                           toast.onmouseleave = Swal.resumeTimer;
+                        }
+                     });
+                     Toast.fire({
+                        icon: "warning",
+                        title: "No action occurred",
                      });
                   }
                });
@@ -125,32 +151,43 @@ function fetchUsers() {
                var _id = $(this).data("id");
 
                // Make GET request to fetch user information
-               $.get(`/api/users/search?_id=${_id}`, function (response) {
-                  // Extract user information from the response
-                  var htmlContent = `
-                   <div>
-                       <p><strong>Username:</strong> ${response.username}</p>
-                       <p><strong>Location:</strong> ${response.location}</p>
-                       <p><strong>Profile:</strong><img width="30px" height="30px" src="/api/files/fetch?filename=${response.profile}"/></p>
-                       <p><strong>Telephone:</strong> ${response.tel}</p>
-                       <p><strong>Email:</strong> ${response.usermail}</p>
-                   </div>
-               `;
+               $.ajax({
+                  url: `/api/users/search?_id=${_id}`,
+                  method: 'GET',
+                  headers: {
+                     'Authorization': `Bearer ${user_token}`,
+                     'Content-Type': 'application/json'
+                  },
+                  success: function (response) {
+                     // Extract user information from the response
+                     var htmlContent = `
+           <div>
+               <p><strong>Username:</strong> ${response.username}</p>
+               <p><strong>Location:</strong> ${response.location}</p>
+               <p><strong>Profile:</strong><img width="20px" height="20px" src="/api/files/fetch?filename=${response.profile}"/></p>
+               <p><strong>Telephone:</strong> ${response.tel}</p>
+               <p><strong>Email:</strong> ${response.usermail}</p>
+           </div>
+       `;
 
-
-                  // Display Swal modal with user information
-                  Swal.fire({
-                     title: "<strong>User Information</strong>",
-                     icon: "info",
-                     html: htmlContent,
-                     showCloseButton: true,
-                     showCancelButton: true,
-                     focusConfirm: false,
-                     confirmButtonText: `<i class="fa fa-thumbs-up"></i> Great!`,
-                     confirmButtonAriaLabel: "Thumbs up, Okay",
-                     cancelButtonText: `<i class="fa fa-thumbs-down"></i>`,
-                  });
+                     // Display Swal modal with user information
+                     Swal.fire({
+                        title: "<strong>User Information</strong>",
+                        icon: "info",
+                        html: htmlContent,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        focusConfirm: false,
+                        confirmButtonText: `<i class="fa fa-thumbs-up"></i> Great!`,
+                        confirmButtonAriaLabel: "Thumbs up, Okay",
+                        cancelButtonText: `<i class="fa fa-thumbs-down"></i>`,
+                     });
+                  },
+                  error: function (xhr, status, error) {
+                     console.error('Error fetching user data:', error);
+                  }
                });
+
             });
 
 
@@ -171,12 +208,21 @@ function fetchUsers() {
          });
       },
       error: function (xhr, textStatus, errorThrown) {
-         // Handle error responses
-         if (xhr.status === 400 || xhr.status === 500) {
-            swal("Oops!", "Somthing happened , try again", "error");
-         } else {
-            swal("Oops!", "An unexpected error occurred.", "error");
-         }
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+         Toast.fire({
+            icon: "warning",
+            title: "Error fecthing users",
+         });
       }
    });
 }
@@ -192,14 +238,15 @@ function fetchCount() {
    $.ajax({
       type: "GET",
       url: "/api/users/fetch",
+      headers: {
+         'Authorization': `Bearer ${user_token}`,
+         'Content-Type': 'application/json'
+      },
       success: function (data) {
          // Get the current count from the received data
          const currentCount = data.length;
          if (currentCount !== previousCount) {
             fetchUsers();
-            // Alert with new count if there's a change
-            console.log('Change detected! New count: ' + currentCount);
-            // Update previous count in localStorage only when there's a change
             localStorage.setItem('previousCount', currentCount);
             //showToast("New user added ", "success", 10000);
          }
@@ -224,8 +271,8 @@ async function addUser() {
         <input id="username" placeholder="Enter username" class="swal2-input">
         <input id="location" placeholder="Enter location" class="swal2-input">
         <input id="tel" placeholder="Enter telephone" class="swal2-input">
-        <input id="password" placeholder="Enter password" class="swal2-input">
-        <input id="file" name="file" style="width:100%" type="file" class="swal2-input">
+        <input id="password" type="password" placeholder="Enter password" class="swal2-input">
+        <input id="file" style="width:270px" name="file" type="file" class="swal2-input">
       `,
       focusConfirm: false,
       preConfirm: () => {
@@ -247,6 +294,9 @@ async function addUser() {
          data: formData,
          processData: false,
          contentType: false,
+         headers: {
+            'Authorization': `Bearer ${user_token}`,
+         },
          success: function (response) {
             formData.delete('usermail');
             formData.delete('username');
