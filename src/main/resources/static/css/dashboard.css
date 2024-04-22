@@ -254,6 +254,12 @@ nav .profile-details i {
   font-size: 20px;
   font-weight: 500;
 }
+.home-content .chart-box{
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+  gap: 20px;
+}
 .home-content .sales-boxes {
   display: flex;
   justify-content: space-between;
@@ -294,11 +300,14 @@ nav .profile-details i {
   font-size: 400;
   text-decoration: none;
 }
+
+.chart-box .box .button ,
 .sales-boxes .box .button {
   width: 100%;
   display: flex;
   justify-content: flex-end;
 }
+.chart-box .box .button a,
 .sales-boxes .box .button a {
   color: #fff;
   background: #0a2558;
@@ -308,6 +317,7 @@ nav .profile-details i {
   border-radius: 4px;
   text-decoration: none;
   transition: all 0.3s ease;
+  margin-top: 10px;
 }
 .sales-boxes .box .button a:hover {
   background: #0d3073;

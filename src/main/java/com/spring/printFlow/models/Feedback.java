@@ -24,6 +24,13 @@ public class Feedback {
       this.fileUrl = "1709998590328_avatar-wrap.png";
       this.createdAt = new Date();
    }
+   public String get_id() {
+      return _id;
+   }
+
+   public void set_id(String _id) {
+      this._id = _id;
+   }
 
    public String getname() {
       return name;

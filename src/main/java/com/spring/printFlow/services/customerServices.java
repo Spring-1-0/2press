@@ -45,10 +45,27 @@ public class customerServices {
       return CustomersFilesRepository.save(file);
    }
 
+   public Boolean updateFileStatusById(String id, String status) {
+      Optional<File> optionalFile = CustomersFilesRepository.findById(id);
+
+      if (optionalFile.isPresent()) {
+          File file = optionalFile.get();
+          file.setStatus(status);
+          CustomersFilesRepository.save(file);
+          return true; // Return true to indicate successful update
+      } else {
+          return false; // Return false to indicate that the file with the given ID was not found
+      }
+  }
+
    // fetch all services
    public List<Customers> getAllCustomers() {
       LOGGER.info("services : fetch all users..");
       return CustomersRepository.findAll();
+   }
+
+   public List<File> getAllCustomerFiles() {
+      return CustomersFilesRepository.findAll();
    }
 
    public Optional<Customers> findById(String _id) {
@@ -97,9 +114,12 @@ public class customerServices {
       return FeedBackRepository.save(feedback);
    }
 
-
    public List<Feedback> getAllFeedback() {
-        return FeedBackRepository.findAll();
-    }
+      return FeedBackRepository.findAll();
+   }
+
+   public void deleteFeedbackById(String _id) {
+      FeedBackRepository.deleteById(_id);
+   }
 
 }

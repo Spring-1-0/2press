@@ -1,3 +1,4 @@
+const customers_token = localStorage.getItem('token');
 // Function to format date in YYYY-MM-DD HH:mm:ss format
 function formatDate(dateString) {
    var date = new Date(dateString);
@@ -12,6 +13,10 @@ function fetchCustomers() {
    $.ajax({
       type: "GET",
       url: "/api/customers/fetch",
+      headers: {
+         'Authorization': `Bearer ${customers_token}`,
+         'Content-Type': 'application/json'
+      },
       success: function (customers) {
 
          // Clear the existing list before adding new customers
@@ -44,7 +49,21 @@ function fetchCustomers() {
 
       },
       error: function (xhr, status, error) {
-         console.error('Error fetching customers:', error);
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+         Toast.fire({
+            icon: "warning",
+            title: "Error fecthing customer",
+         });
       }
    });
 }
@@ -71,6 +90,10 @@ function deleteCustomers(_id) {
 
          fetch(`/api/customers/delete?_id=${_id}`, {
             method: 'DELETE',
+            headers: {
+               'Authorization': `Bearer ${customers_token}`,
+               'Content-Type': 'application/json'
+            },
          })
             .then(response => {
                // Check if the request was successful (status code 200-299)
@@ -96,10 +119,21 @@ function deleteCustomers(_id) {
                }
             })
             .catch(error => {
-               swalWithBootstrapButtons.fire({
-                  title: "Cancelled",
-                  text: "customer deletion was not successful, please try again",
-                  icon: "error"
+
+               const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 4000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                     toast.onmouseenter = Swal.stopTimer;
+                     toast.onmouseleave = Swal.resumeTimer;
+                  }
+               });
+               Toast.fire({
+                  icon: "warning",
+                  title: "customer deletion was not successful, please try again",
                });
             });
 
@@ -108,10 +142,20 @@ function deleteCustomers(_id) {
          /* Read more about handling dismissals below */
          result.dismiss === Swal.DismissReason.cancel
       ) {
-         swalWithBootstrapButtons.fire({
-            title: "Cancelled",
-            text: "Your customer is safe :)",
-            icon: "error"
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+         Toast.fire({
+            icon: "warning",
+            title: "No action occurred",
          });
       }
    });

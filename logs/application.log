@@ -1,4 +1,4 @@
-2024-03-10 10:57:57.023 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+2024-03-14 13:48:53.900 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
 org.springframework.boot.docker.compose.core.DockerNotRunningException: Docker is not running
 	at org.springframework.boot.docker.compose.core.DockerCli$DockerCommands.getDockerCommand(DockerCli.java:146)
 	at org.springframework.boot.docker.compose.core.DockerCli$DockerCommands.<init>(DockerCli.java:129)

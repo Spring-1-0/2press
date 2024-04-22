@@ -74,23 +74,24 @@
                 url: "/api/users/login",
                 data: formData, // Use the FormData directly
                 success: function (response) {
-
+                 var token = response;
+                   localStorage.setItem('token',token);
                     // Handle success scenario
                     const Toast = Swal.mixin({
                         toast: true,
                         position: "top-end",
                         showConfirmButton: false,
-                        timer: 3000,
+                        timer: 2000,
                         timerProgressBar: true,
                         didOpen: (toast) => {
-                          toast.onmouseenter = Swal.stopTimer;
-                          toast.onmouseleave = Swal.resumeTimer;
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
                         }
-                      });
-                      Toast.fire({
+                    });
+                    Toast.fire({
                         icon: "success",
                         title: "Signed in successfully"
-                      });
+                    });
 
                     setTimeout(function () {
                         window.location.href = "/dashboard/home";
@@ -103,18 +104,69 @@
                     //console.error("Error loggin user:", errorThrown);
                     if (xhr.status === 404) {
 
-                        swal("Oops!", xhr.responseText, "error");
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: xhr.responseText
+                        });
 
                     } else if (xhr.status === 401 || xhr.status === 400) {
 
-                        swal("Oops!", xhr.responseText, "error");
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: xhr.responseText
+                        });
 
                     } else if (xhr.status === 500 || xhr.status === 501) {
-                        swal("Oops!", xhr.responseText, "error");
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: xhr.responseText
+                        });
 
                     }
                 }
             });
+        }
+
+
+        function handleSuccessfulLogin(token) {
+            // Store the token in session storage
+            sessionStorage.setItem('token', token);
         }
 
     </script>

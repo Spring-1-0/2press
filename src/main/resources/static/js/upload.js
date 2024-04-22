@@ -1,6 +1,6 @@
 
 const formData = new FormData();
-
+const report2_token = localStorage.getItem('token');
 const existingFileNames = [];
 let totalFiles = 0;
 const fileCounter = document.getElementById('fileCounter');
@@ -257,6 +257,10 @@ function getactivityTypes() {
    $.ajax({
       type: "GET",
       url: "/api/customers/action-types",
+      headers: {
+         'Authorization': `Bearer ${report2_token}`,
+         'Content-Type': 'application/json'
+      },
       success: function (types) {
          const inputOptions = {};
          types.forEach(type => {
@@ -267,7 +271,21 @@ function getactivityTypes() {
          activity(inputOptions);
       },
       error: function (xhr, status, error) {
-         console.error('Error fetching action types :', error);
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+         Toast.fire({
+            icon: "warning",
+            title: "Error fecthing activties",
+         });
       }
    });
 
@@ -350,6 +368,9 @@ submitButton.addEventListener('click', async () => {
             data: formData,
             processData: false,
             contentType: false,
+            headers: {
+               'Authorization': `Bearer ${report2_token}`,
+            },
             success: function (response) {
                console.log('Files submitted successfully:', response);
                localStorage.removeItem('selectedFiles');
@@ -467,6 +488,9 @@ async function feedback() {
          data: formData,
          processData: false,
          contentType: false,
+         headers: {
+            'Authorization': `Bearer ${report2_token}`,
+         },
          success: function (response) {
             const Toast = Swal.mixin({
                toast: true,
@@ -483,11 +507,13 @@ async function feedback() {
                icon: "success",
                title: "Feedback sent successfully"
             });
+
+            formData.delete('name');
+            formData.delete('message');
+            formValues[0] = '';
+            formValues[1] = '';
          },
          error: function (xhr, textStatus, errorThrown) {
-
-
-            console.log(xhr, textStatus, errorThrown);
             const Toast = Swal.mixin({
                toast: true,
                position: "top-end",

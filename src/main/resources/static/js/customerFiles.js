@@ -1,4 +1,4 @@
-
+const customer_token = localStorage.getItem('token');
 
 const blobUrl = '';
 function getCustomerIdFromUrl() {
@@ -43,6 +43,10 @@ function fetchCustomers() {
    $.ajax({
       type: "GET",
       url: "/api/customers/findById?_id=" + _id,
+      headers: {
+         'Authorization': `Bearer ${customer_token}`,
+         'Content-Type': 'application/json'
+      },
       success: function (customer) {
 
          $("#customerName").text(customer.name);
@@ -51,6 +55,10 @@ function fetchCustomers() {
          $.ajax({
             type: "GET",
             url: "/api/customers/find/Files/ByRefId?refId=" + customer.refId,
+            headers: {
+               'Authorization': `Bearer ${customer_token}`,
+               'Content-Type': 'application/json'
+            },
             success: function (files) {
                $('#customer-list').empty();
                files.forEach(function (file, index) {
@@ -72,7 +80,21 @@ function fetchCustomers() {
             }
             ,
             error: function (xhr, status, error) {
-               console.error('Error fetching customer files :', error);
+               const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 4000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                     toast.onmouseenter = Swal.stopTimer;
+                     toast.onmouseleave = Swal.resumeTimer;
+                  }
+               });
+               Toast.fire({
+                  icon: "warning",
+                  title: "Error fecthing customer files",
+               });
             }
          });
 
@@ -90,7 +112,21 @@ function fetchCustomers() {
 
       },
       error: function (xhr, status, error) {
-         console.error('Error fetching customers:', error);
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+         Toast.fire({
+            icon: "warning",
+            title: "Error fecthing customer files",
+         });
       }
    });
 
@@ -105,10 +141,18 @@ function fetchCustomersFiles() {
    $.ajax({
       type: "GET",
       url: "/api/customers/findById?_id=" + _id,
+      headers: {
+         'Authorization': `Bearer ${customer_token}`,
+         'Content-Type': 'application/json'
+      },
       success: function (customer) {
          $.ajax({
             type: "GET",
             url: "/api/customers/find/Files/ByRefId?refId=" + customer.refId,
+            headers: {
+               'Authorization': `Bearer ${customer_token}`,
+               'Content-Type': 'application/json'
+            },
             success: function (files) {
                $('#myTable tbody').empty(); // Clear existing table rows
                files.forEach(function (file, index) {
@@ -126,15 +170,14 @@ function fetchCustomersFiles() {
                   // Add action buttons for download and print
                   var actions = $("<td>");
                   var downloadBtn = $("<button>").html('<i class="fa fa-download"></i>').addClass("btn").attr("title", "Download").click(function () {
-                     downloadFile(file.name); // Call function to download the file
+                     downloadFile(file.name , file._id , file.cusRefId); 
                   });
                   var printBtn = $("<button>").html('<i class="fa fa-print"></i>').addClass("btn").attr("title", "Print").click(function () {
-                     openPrintModal(file.name); // Call function to open print modal
+                     openPrintModal(file.name , file._id , file.cusRefId); // Call function to open print modal
                   });
                   var previewBtn = $("<button>").html('<i class="fa fa-eye"></i>').addClass("btn").attr("title", "Preview").click(function () {
-                     openPreview(file.name); // Call function to open preview modal
+                     openPreview(file.name , file._id , file.cusRefId); // Call function to open preview modal
                   });
-
 
                   actions.append(downloadBtn).append(printBtn).append(previewBtn);
                   row.append(actions);
@@ -144,21 +187,53 @@ function fetchCustomersFiles() {
                });
             },
             error: function (xhr, status, error) {
-               console.error('Error fetching customer files:', error);
+               const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 4000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                     toast.onmouseenter = Swal.stopTimer;
+                     toast.onmouseleave = Swal.resumeTimer;
+                  }
+               });
+               Toast.fire({
+                  icon: "warning",
+                  title: "Error fecthing customer files",
+               });
             }
          });
       },
       error: function (xhr, status, error) {
-         console.error('Error fetching customers:', error);
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+         Toast.fire({
+            icon: "warning",
+            title: "Error fecthing customer files",
+         });
       }
    });
 }
 
 // Function to download the file
-function downloadFile(fileName) {
+function downloadFile(fileName , fileId , cusRefId) {
    $.ajax({
       type: "GET",
       url: '/api/files/fetch?filename=' + fileName,
+      headers: {
+         'Authorization': `Bearer ${customer_token}`,
+         'Content-Type': 'application/json'
+      },
       xhrFields: {
          responseType: 'blob'
       },
@@ -179,37 +254,19 @@ function downloadFile(fileName) {
 
 
 
-function openPreview(fileName) {
+function openPreview(fileName , fileId , cusRefId) {
    const fileUrl = '/uploads/' + fileName;
    window.open(fileUrl, '_blank');
 }
 
-// Function to open print modal
-// function openPrintModal(fileName) {
 
-//    const fileUrl = '/uploads/' + fileName;
-
-//    const iframe = document.createElement('iframe');
-//    iframe.src = fileUrl;
-//    iframe.style.width = '100%';
-//    iframe.style.height = '100%';
-//    iframe.style.border = 'none';
-
-//    document.body.appendChild(iframe);
-
-//    iframe.onload = () => {
-//       iframe.contentWindow.print();
-//       iframe.style.display = 'none';
-
-//    };
-
-
-// }
-
-
-async function openPrintModal(fileName) {
+async function openPrintModal(fileName , fileId , cusRefId) {
    const fileExtension = fileName.split('.').pop().toLowerCase();
    const fileUrl = '/uploads/' + fileName;
+   const iframe = document.createElement('iframe');
+   iframe.style.width = '100%';
+   iframe.style.height = '100%';
+   iframe.style.border = 'none';
 
    if (fileExtension === 'doc' || fileExtension === 'txt') {
       // Convert DOC or TXT to PDF on the server
@@ -220,39 +277,99 @@ async function openPrintModal(fileName) {
       const pdfUrl = URL.createObjectURL(blob);
 
       // Open the PDF file for printing
-      const iframe = document.createElement('iframe');
       iframe.src = pdfUrl;
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.border = 'none';
       document.body.appendChild(iframe);
 
       iframe.onload = () => {
          iframe.contentWindow.print();
          iframe.style.display = 'none';
+         console.log("print is ready doc and txt");
       };
    } else {
       // Directly print the file if it's already in PDF format
-      const iframe = document.createElement('iframe');
       iframe.src = fileUrl;
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.border = 'none';
       document.body.appendChild(iframe);
-
       iframe.onload = () => {
          iframe.contentWindow.print();
          iframe.style.display = 'none';
       };
    }
+
+iframe.contentWindow.addEventListener('afterprint', cleanupAndNotify);
+
+function cleanupAndNotify(event) {
+   // Cleanup and notify the user
+   iframe.contentWindow.removeEventListener('afterprint', cleanupAndNotify);
+    var cusRefId = _id;
+   if (event.returnValue) {
+      console.log('Printing was successful.'+event.returnValue);
+       updateSalesStatus(fileId, 'successful' , cusRefId);
+   } else {
+      console.log('Printing was canceled.'+event.returnValue);
+      // Add your actions for canceled printing here
+   }
+}
+
+}
+
+
+function updateSalesStatus(fileId, status , cusRefId) {
+   var formData = new FormData();
+   formData.append('_id', fileId);
+   formData.append('status', status);
+   formData.append('cusRefId', cusRefId);
+   
+   $.ajax({
+      type: "POST",
+      url: '/api/reports/sales/update-status',
+      data: formData, 
+      processData: false,  
+      contentType: false, 
+      headers: {
+         'Authorization': `Bearer ${customer_token}`,
+      },
+      success: function (data) {
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+         Toast.fire({
+            icon: "success",
+            title: "Sales updated successfully"
+         });
+         fetchCustomersFiles();
+      },
+      error: function (xhr, status, error) {
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "error",
+            title: xhr.responseText
+        });
+         
+      }
+   });
 }
 
 
 
 
-// Function to print the file content
-function printFile() {
 
-}
 
 fetchCustomersFiles();

@@ -59,7 +59,7 @@
             </a>
          </li>
          <li class="log_out">
-            <a href="#">
+            <a href="#" onclick="logout()">
                <i class="bx bx-log-out"></i>
                <span class="links_name">Log out</span>
             </a>
@@ -113,7 +113,7 @@
                </div>
             </div>
             <div class="top-sales box">
-               <div class="title">Customers</div>
+               <div class="title">Ratings</div>
                <input type="text" id="search-input" placeholder="Search by name">
                <ul class="top-sales-details" id="customer-list">
                </ul>
@@ -129,7 +129,9 @@
       <img class="modal-content" id="modalImage">
    </div>
 
-   <div class="toast-overlay" id="toast-overlay"></div>
+  
+  <div class="toast-overlay" id="toast-overlay"></div>
+ <script type="text/javascript" th:src="@{/js/auth.js}"></script>
    <script type="text/javascript" th:src="@{/js/toast.js}"></script>
 
    <script type="text/javascript" th:src="@{/js/jquery-3.6.4.min.js}"></script>

@@ -24,17 +24,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.spring.printFlow.models.User;
 import com.spring.printFlow.services.userService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
     private static final Logger LOGGER = LoggerFactory.getLogger(userService.class);
 
+    @Autowired
     private final userService userService;
 
     public UserController(userService userService) {
@@ -42,10 +42,9 @@ public class UserController {
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<?> getAllUsers(HttpServletRequest request) {
         try {
-            List<User> users = userService.getAllUsers();
-            LOGGER.info("Controller: Fetch all users...");
+            List<User> users = this.userService.getAllUsers();
             return ResponseEntity.ok().body(users);
         } catch (Exception error) {
             LOGGER.error("Error fetching users: {}", error.getMessage(), error);
@@ -355,5 +354,4 @@ public class UserController {
         }
     }
 
-    
 }

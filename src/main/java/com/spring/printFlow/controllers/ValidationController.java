@@ -36,4 +36,24 @@ public class ValidationController {
         return BCrypt.checkpw(enteredPassword, hashedPassword);
     }
 
+
+    //hash to ken
+    /***
+     * hash token
+     * **/
+    public static String hashToken(String plainToken) {
+        // The higher the workload factor, the more time is needed to hash the password
+        int workload = 12;
+        return BCrypt.hashpw(plainToken, BCrypt.gensalt(workload));
+    }
+
+    /**
+     * check token 
+     *
+     * */
+    public static boolean checkToken(String headerToken, String hashedToken) {
+        return BCrypt.checkpw(headerToken, hashedToken);
+    }
+
+
 }
