@@ -311,6 +311,7 @@ async function activity(inputOptions) {
    if (activity) {
       //Swal.fire(`You selected: ${activity}`);
       formData.append('activity', activity);
+      
       activityText.textContent = activity;
    }
 }
@@ -397,22 +398,21 @@ submitButton.addEventListener('click', async () => {
                }, 4200);
             },
             error: function (xhr, textStatus, errorThrown) {
-               if (xhr.status >= 400 && xhr.status <= 499) {
-                  const Toast = Swal.mixin({
-                     toast: true,
-                     position: "top-end",
-                     showConfirmButton: false,
-                     timer: 4000,
-                     timerProgressBar: true,
-                     didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                     }
-                  });
-                  Toast.fire({
-                     icon: "error",
-                     title: "Files not sent successfully, Please try again"
-                  });
+               if (xhr.status >= 400 && xhr.status <= 499) {const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 4000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                  }
+              });
+              Toast.fire({
+                  icon: "error",
+                  title: xhr.responseText
+              });
 
                } else if (xhr.status >= 500) {
                   const Toast = Swal.mixin({
@@ -455,7 +455,7 @@ submitButton.addEventListener('click', async () => {
       });
       setTimeout(() => {
          window.location.reload();
-      }, 3000);
+      }, 2000);
    }
 });
 

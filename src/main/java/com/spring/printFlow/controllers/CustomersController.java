@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import com.spring.printFlow.models.ActionTypes;
 import com.spring.printFlow.models.Customers;
 import com.spring.printFlow.models.Feedback;
 import com.spring.printFlow.models.File;
+import com.spring.printFlow.models.Prices;
 import com.spring.printFlow.models.Sales;
 import com.spring.printFlow.services.customerServices;
 import com.spring.printFlow.services.reportServices;
@@ -56,13 +58,21 @@ public class CustomersController {
          @RequestParam("activity") String activity,
          @RequestParam("copies") Long copies,
          @RequestParam("color") String color, @RequestParam("message") String message) {
-      // Log info
-      LOGGER.info("Controller: Saving users...");
       try {
          List<String> successfulUploads = new ArrayList<>();
          String refId = Random();
-
+         double typePrice = 0;
          String status = "pending";
+         
+         Optional<Prices> existingActionTypeOptional = customerServices.findByTypeName(activity);
+         if (existingActionTypeOptional.isPresent()) {
+            Prices prices = existingActionTypeOptional.get();
+            typePrice = prices.getPrice();
+         }
+
+         if(typePrice <= 0){
+            return ResponseEntity.badRequest().body("No price was set for this activity, please contact admin");
+         }
 
          for (MultipartFile file : files) {
             if (!file.isEmpty() && ValidationController.isImageFile(file.getOriginalFilename())) {
@@ -91,7 +101,7 @@ public class CustomersController {
 
                Files.copy(file.getInputStream(), Paths.get(uploadDir, fileName), StandardCopyOption.REPLACE_EXISTING);
 
-               File fileData = new File(fileName, status, refId, ext, 10, activity, (float) 90, copies, color,
+               File fileData = new File(fileName, status, refId, ext, 10, activity, typePrice, copies, color,
                      message);
 
                customerServices.saveFile(fileData);
@@ -108,7 +118,7 @@ public class CustomersController {
             // Send user data to userService for saving
             customerServices.saveCustomer(customers);
 
-            Sales sale = new Sales(status, activity, (float) 90, customers.getname(), customers.get_id());
+            Sales sale = new Sales(status, activity, typePrice, customers.getname(), customers.getId());
 
             reportServices.saveSales(sale);
             // Return a success response with the list of uploaded file names
@@ -224,22 +234,6 @@ public class CustomersController {
       }
    }
 
-   @GetMapping("/action-types")
-   public ResponseEntity<?> getAllActionTypes() {
-      try {
-         List<ActionTypes> types = customerServices.getAllActionTypes();
-         LOGGER.info("Controller: Fetch all customers...");
-         return ResponseEntity.ok().body(types);
-      } catch (Exception error) {
-         LOGGER.error("Error fetching types: {}", error.getMessage(), error);
-         // Return an error response with a message
-         error.printStackTrace();
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-               .body("Something happened  fetching types: ");
-
-      }
-   }
-
    @DeleteMapping("/delete")
    public ResponseEntity<?> delete(@RequestParam(name = "_id") String _id) {
       try {
@@ -294,8 +288,6 @@ public class CustomersController {
       } catch (DataAccessException error) {
          // Handle or log the exception
          error.printStackTrace();
-         LOGGER.error("Error saving feedback: {}", error.getMessage(), error);
-
          // Return an error response with a message
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                .body("Something happened saving feedback, Please try again");
@@ -326,6 +318,123 @@ public class CustomersController {
          error.printStackTrace();
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                .body("Something happened deleting feedback, Please try again");
+      }
+   }
+
+   @GetMapping("/action-types")
+   public ResponseEntity<?> getAllActionTypes() {
+      try {
+         List<ActionTypes> types = customerServices.getAllActionTypes();
+         LOGGER.info("Controller: Fetch all customers...");
+         return ResponseEntity.ok().body(types);
+      } catch (Exception error) {
+         LOGGER.error("Error fetching types: {}", error.getMessage(), error);
+         // Return an error response with a message
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened  fetching types: ");
+
+      }
+   }
+
+   @DeleteMapping("/action-types/delete")
+   public ResponseEntity<?> actionTypeDeleteById(@RequestParam(name = "_id") String _id) {
+
+      try {
+         customerServices.actionTypeDeleteById(_id);
+         return ResponseEntity.ok().body("Type deleted successfully");
+      } catch (Exception error) {
+         LOGGER.error("Error fetching types: {}", error.getMessage(), error);
+         // Return an error response with a message
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened  fetching types: ");
+      }
+   }
+
+   @PostMapping("/action-types/save")
+   public ResponseEntity<?> actionTypeSave(
+         @RequestParam("name") String name) {
+
+      try {
+
+         List<ActionTypes> existingActionTypeOptional = customerServices.findActionTypeByName(name);
+
+         if (!existingActionTypeOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Activity already exist , Please , use different ");
+         }
+
+         ActionTypes data = new ActionTypes(name);
+         customerServices.actionTypeSave(data);
+         return ResponseEntity.ok().body("Type saved successfully");
+      } catch (Exception error) {
+         LOGGER.error("Error fetching types: {}", error.getMessage(), error);
+         // Return an error response with a message
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened  fetching types: ");
+      }
+   }
+
+   @PostMapping("/save/prices")
+   public ResponseEntity<?> savePrices(
+         @RequestParam("typeId") String typeId,
+         @RequestParam("type") String type,
+         @RequestParam("price") Float price,
+         @RequestParam("color") String color) {
+      try {
+
+         List<Prices> checkExistingPrice = customerServices.getPricesByTypeId(typeId);
+
+         List<Prices> checkColor = customerServices.getPricesByColor(color);
+
+         if (!checkExistingPrice.isEmpty() && !checkColor.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                  .body("Price already exists, either delete to set new one");
+         }
+
+         Prices data = new Prices(typeId, price, color, type);
+         customerServices.savePrice(data);
+         return ResponseEntity.ok().body("Type saved successfully");
+      } catch (Exception error) {
+         // Handle or log the exception
+         error.printStackTrace();
+         LOGGER.error("Error saving prices: {}", error.getMessage(), error);
+
+         // Return an error response with a message
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened saving prices, Please try again");
+      }
+   }
+
+   @DeleteMapping("/action-types/prices/delete")
+   public ResponseEntity<?> actionTypePriceDeleteById(@RequestParam(name = "_id") String _id) {
+
+      try {
+         customerServices.deletePriceById(_id);
+         return ResponseEntity.ok().body("Type deleted successfully");
+      } catch (Exception error) {
+         LOGGER.error("Error fetching types: {}", error.getMessage(), error);
+         // Return an error response with a message
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened  fetching types: ");
+      }
+   }
+
+   @GetMapping("/action-types/prices")
+   public ResponseEntity<?> getAllActionTypesPrices() {
+      try {
+         List<Prices> types = customerServices.getAllTypesPrices();
+         LOGGER.info("Controller: Fetch all customers...");
+         return ResponseEntity.ok().body(types);
+      } catch (Exception error) {
+         LOGGER.error("Error fetching types: {}", error.getMessage(), error);
+         // Return an error response with a message
+         error.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body("Something happened  fetching types: ");
+
       }
    }
 

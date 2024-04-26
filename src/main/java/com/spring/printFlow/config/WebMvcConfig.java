@@ -16,6 +16,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(@SuppressWarnings("null") InterceptorRegistry registry) {
         registry.addInterceptor(tokenValidationInterceptor).addPathPatterns("/api/**")
-        .excludePathPatterns("/api/users/login", "/api/user/forget-password", "/api/user/reset-password","/api/files/fetch","/api/convert-to-pdf");
+        .excludePathPatterns("/api/users/login", "/api/user/forget-password", "/api/user/reset-password","/api/files/fetch","/api/convert-to-pdf","/api/customers/action-types","/api/customers/save");
     }
 }

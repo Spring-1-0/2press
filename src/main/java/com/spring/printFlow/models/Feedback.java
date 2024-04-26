@@ -24,11 +24,11 @@ public class Feedback {
       this.fileUrl = "1709998590328_avatar-wrap.png";
       this.createdAt = new Date();
    }
-   public String get_id() {
+   public String getId() {
       return _id;
    }
 
-   public void set_id(String _id) {
+   public void setid(String _id) {
       this._id = _id;
    }
 
@@ -60,7 +60,7 @@ public class Feedback {
       return createdAt;
    }
 
-   public void setCreated_at(Date createdAt) {
+   public void setCreatedAt(Date createdAt) {
       this.createdAt = createdAt;
    }
 }

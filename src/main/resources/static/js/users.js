@@ -38,9 +38,9 @@ function fetchUsers() {
             row.append($("<td>").text(user.usermail));
 
             // Create a button with a data attribute to store the _id
-            var buttondel = $("<button>").html('<i class="fa fa-trash"></i>').addClass("del-btn").attr("data-id", user._id).attr("title", "Delete");
-            var buttonview = $("<button>").html('<i class="fa fa-eye"></i>').addClass("view-btn").attr("data-id", user._id).attr("title", "View");
-            var buttonedit = $("<button>").html('<i class="fa fa-edit"></i>').addClass("edit-btn").attr("data-id", user._id).attr("title", "Edit");
+            var buttondel = $("<button>").html('<i class="fa fa-trash"></i>').addClass("del-btn").attr("data-id", user.id).attr("title", "Delete");
+            var buttonview = $("<button>").html('<i class="fa fa-eye"></i>').addClass("view-btn").attr("data-id", user.id).attr("title", "View");
+            var buttonedit = $("<button>").html('<i class="fa fa-edit"></i>').addClass("edit-btn").attr("data-id", user.id).attr("title", "Edit");
 
             // Attach a click event handler to the button
             buttondel.click(function () {

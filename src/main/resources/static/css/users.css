@@ -614,3 +614,73 @@ nav .profile-details i {
   color: rgba(0, 0, 0, 0.65);
   transform: translateY(0);
 }
+
+
+
+.grid-boxes  {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Divide the container into two columns */
+  gap: 10px; /* Add some spacing between grid items */
+}
+
+.box-section {
+  background-color: #f0f0f0bb;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.050);
+}
+
+/* Adjust styles for smaller screens */
+@media (max-width: 768px) {
+  .grid-boxes  {
+      grid-template-columns: repeat(1, 1fr); /* On smaller screens, display as a single column */
+  }
+}
+
+#activity-list , #price-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#activity-list , #price-list  {
+display: flex;
+flex-direction: column;
+gap: 15px;
+height: 220px;
+overflow-y: auto;
+}
+#activity-list li , #price-list li{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+  list-style: none;
+  text-align: left;
+  padding-right: 10px;
+}
+
+
+.activity-type{
+  flex: 1;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.delete-icon {
+  cursor: pointer;
+}
+
+/* Optional: Hover effect for delete icon */
+.delete-icon:hover {
+  color: red;
+}
+
+.add-button {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

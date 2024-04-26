@@ -36,25 +36,28 @@ function closeSearch() {
 }
 
 
-// Function to filter customers by name
-function filterCustomersByName() {
-   var input, filter, ul, li, a, i, txtValue;
-   input = document.getElementById('search-input');
-   filter = input.value.toUpperCase();
-   ul = document.getElementById("customer-list");
-   li = ul.getElementsByTagName('li');
-   for (i = 0; i < li.length; i++) {
-      a = li[i].getElementsByClassName("product")[0];
-      txtValue = a.textContent || a.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-         li[i].style.display = "";
-      } else {
-         li[i].style.display = "none";
-      }
-   }
-}
+// // Function to filter customers by name
+// function filterCustomersByName() {
+//    var input, filter, ul, li, a, i, txtValue;
+//    input = document.getElementById('search-input');
+//    filter = input.value.toUpperCase();
+//    ul = document.getElementById("customer-list");
+//    li = ul.getElementsByTagName('li');
+//    for (i = 0; i < li.length; i++) {
+//       a = li[i].getElementsByClassName("product")[0];
+//       txtValue = a.textContent || a.innerText;
+//       if (txtValue.toUpperCase().indexOf(filter) > -1) {
+//          li[i].style.display = "";
+//       } else {
+//          li[i].style.display = "none";
+//       }
+//    }
+// }
 
-// Attach event listener to search input
-document.getElementById("search-input").addEventListener("input", filterCustomersByName);
+// // Attach event listener to search input
+// var searcInput = document.getElementById("search-input")
+// if (searcInput) {
 
+// searcInput.addEventListener("input", filterCustomersByName);
+// }
 

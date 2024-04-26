@@ -104,7 +104,7 @@ function fetchCustomers() {
             var extension = fileUrl.split('.').pop().toLowerCase();
 
             if (extension === 'pdf' || extension === 'doc' || extension === 'docx') {
-               return '<img width="30px" height="30px" src="/api/files/fetch?filename=1708202239534_download.jpeg" >';
+               return '<img width="30px" height="30px" src="https://i.pinimg.com/474x/39/9d/f0/399df0c33700ac96624bfe9215da0437.jpg" >';
             } else {
                return '<img src="/api/files/fetch?filename=' + encodeURIComponent(fileUrl) + '" alt="">';
             }
@@ -170,16 +170,27 @@ function fetchCustomersFiles() {
                   // Add action buttons for download and print
                   var actions = $("<td>");
                   var downloadBtn = $("<button>").html('<i class="fa fa-download"></i>').addClass("btn").attr("title", "Download").click(function () {
-                     downloadFile(file.name , file._id , file.cusRefId); 
+                     downloadFile(file.name, file._id, file.cusRefId);
                   });
                   var printBtn = $("<button>").html('<i class="fa fa-print"></i>').addClass("btn").attr("title", "Print").click(function () {
-                     openPrintModal(file.name , file._id , file.cusRefId); // Call function to open print modal
+                     openPrintModal(file.name, file._id, file.cusRefId); // Call function to open print modal
                   });
                   var previewBtn = $("<button>").html('<i class="fa fa-eye"></i>').addClass("btn").attr("title", "Preview").click(function () {
-                     openPreview(file.name , file._id , file.cusRefId); // Call function to open preview modal
+                     openPreview(file.name, file._id, file.cusRefId); // Call function to open preview modal
                   });
 
-                  actions.append(downloadBtn).append(printBtn).append(previewBtn);
+                  var rePrintBtn = $("<button>").html('<i class="fa fa-redo">&#xf0e2;</i>').addClass("btn").attr("title", "Redo").click(function () {
+                     openPrintModal(file.name, file._id, file.cusRefId, "redo"); // Call function to open print modal
+                  });
+
+                  if (file.status !== "successful") {
+
+                     actions.append(downloadBtn).append(printBtn).append(previewBtn);
+
+                  } else {
+
+                     actions.append(downloadBtn).append(rePrintBtn).append(previewBtn);
+                  }
                   row.append(actions);
                   row.append("<td>" + (index + 1) + "</td>");
                   // Append the row to the table
@@ -226,7 +237,7 @@ function fetchCustomersFiles() {
 }
 
 // Function to download the file
-function downloadFile(fileName , fileId , cusRefId) {
+function downloadFile(fileName, fileId, cusRefId) {
    $.ajax({
       type: "GET",
       url: '/api/files/fetch?filename=' + fileName,
@@ -238,13 +249,37 @@ function downloadFile(fileName , fileId , cusRefId) {
          responseType: 'blob'
       },
       success: function (blob) {
-         var url = URL.createObjectURL(blob);
-         var link = document.createElement('a');
-         link.href = url;
-         link.download = fileName;
-         document.body.appendChild(link);
-         link.click();
-         document.body.removeChild(link);
+
+         Swal.fire({
+            title: "Are you sure?",
+            text: "You want to add this as records , the owner will be notified",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, add it!"
+         }).then((result) => {
+            if (result.isConfirmed) {
+               var cusRefId = _id;
+               updateSalesStatus(fileId, 'successful', cusRefId);
+               var url = URL.createObjectURL(blob);
+               var link = document.createElement('a');
+               link.href = url;
+               link.download = fileName;
+               document.body.appendChild(link);
+               link.click();
+            } else {
+               var url = URL.createObjectURL(blob);
+               var link = document.createElement('a');
+               link.href = url;
+               link.download = fileName;
+               document.body.appendChild(link);
+               link.click();
+               document.body.removeChild(link);
+
+            }
+         });
+
       },
       error: function (xhr, status, error) {
          console.error('Error downloading file:', error);
@@ -254,13 +289,13 @@ function downloadFile(fileName , fileId , cusRefId) {
 
 
 
-function openPreview(fileName , fileId , cusRefId) {
+function openPreview(fileName, fileId, cusRefId) {
    const fileUrl = '/uploads/' + fileName;
    window.open(fileUrl, '_blank');
 }
 
 
-async function openPrintModal(fileName , fileId , cusRefId) {
+async function openPrintModal(fileName, fileId, cusRefId) {
    const fileExtension = fileName.split('.').pop().toLowerCase();
    const fileUrl = '/uploads/' + fileName;
    const iframe = document.createElement('iframe');
@@ -295,45 +330,46 @@ async function openPrintModal(fileName , fileId , cusRefId) {
       };
    }
 
-iframe.contentWindow.addEventListener('afterprint', cleanupAndNotify);
+   iframe.contentWindow.addEventListener('afterprint', cleanupAndNotify);
 
-function cleanupAndNotify(event) {
-   // Cleanup and notify the user
-   iframe.contentWindow.removeEventListener('afterprint', cleanupAndNotify);
-    var cusRefId = _id;
-   if (event.returnValue) {
-      console.log('Printing was successful.'+event.returnValue);
-       updateSalesStatus(fileId, 'successful' , cusRefId);
-   } else {
-      console.log('Printing was canceled.'+event.returnValue);
-      // Add your actions for canceled printing here
+   function cleanupAndNotify(event) {
+      // Cleanup and notify the user
+      iframe.contentWindow.removeEventListener('afterprint', cleanupAndNotify);
+      var cusRefId = _id;
+      if (event.returnValue) {
+         console.log('Printing was successful.' + event.returnValue);
+         updateSalesStatus(fileId, 'successful', cusRefId);
+      } else {
+         console.log('Printing was canceled.' + event.returnValue);
+         // Add your actions for canceled printing here
+      }
    }
-}
 
 }
 
 
-function updateSalesStatus(fileId, status , cusRefId) {
+function updateSalesStatus(fileId, status, cusRefId) {
    var formData = new FormData();
    formData.append('_id', fileId);
    formData.append('status', status);
    formData.append('cusRefId', cusRefId);
-   
+
    $.ajax({
       type: "POST",
       url: '/api/reports/sales/update-status',
-      data: formData, 
-      processData: false,  
-      contentType: false, 
+      data: formData,
+      processData: false,
+      contentType: false,
       headers: {
          'Authorization': `Bearer ${customer_token}`,
       },
       success: function (data) {
+         console.log(data)
          const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
             showConfirmButton: false,
-            timer: 4000,
+            timer: 3000,
             timerProgressBar: true,
             didOpen: (toast) => {
                toast.onmouseenter = Swal.stopTimer;
@@ -342,11 +378,17 @@ function updateSalesStatus(fileId, status , cusRefId) {
          });
          Toast.fire({
             icon: "success",
-            title: "Sales updated successfully"
+            title: data
          });
+
+         formData.delete('_id');
+         formData.delete('status');
+         formData.delete('cusRefId');
          fetchCustomersFiles();
       },
       error: function (xhr, status, error) {
+
+         console.log(xhr, status, error);
          const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
@@ -354,15 +396,15 @@ function updateSalesStatus(fileId, status , cusRefId) {
             timer: 3000,
             timerProgressBar: true,
             didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+               toast.onmouseenter = Swal.stopTimer;
+               toast.onmouseleave = Swal.resumeTimer;
             }
-        });
-        Toast.fire({
+         });
+         Toast.fire({
             icon: "error",
             title: xhr.responseText
-        });
-         
+         });
+
       }
    });
 }

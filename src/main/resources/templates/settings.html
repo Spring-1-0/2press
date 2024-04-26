@@ -46,7 +46,7 @@
          </li>
          <li>
             <a href="/dashboard/report">
-               <i class="bx bx-cog"></i>
+               <i class="fa fa-line-chart"></i>
                <span class="links_name">Report</span>
             </a>
          </li>
@@ -68,7 +68,7 @@
       <nav>
          <div class="sidebar-button">
             <i class="bx bx-menu sidebarBtn"></i>
-            <span class="dashboard">Home</span>
+            <span class="dashboard">Settings</span>
          </div>
          <div class="search-box">
             <input type="text" placeholder="Search..." />
@@ -86,32 +86,38 @@
 
          <div class="sales-boxes">
             <div class="recent-sales box">
-               <div class="title">Files</div>
-               <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."
-                  title="Type in a name">
-               <div id="myTableContainer">
-                  <table id="myTable">
-                     <thead>
-                        <tr>
+               <div class="grid-boxes ">
+                  <div class="box-section">
+                     <h2 title="Add more" onclick="setActivityType()" class="add-button"> <span>Activities</span> <i
+                           class="fa fa-plus" title="Add more"></i> </h2>
+                     <ul id="activity-list">
+                        <!-- List items will be dynamically generated here -->
+                     </ul>
 
-                           <th>Name</th>
-                           <th>Color</th>
-                           <th>Copies</th>
-                           <th>Status</th>
-                           <th>Activity</th>
-                           <th>Action</th>
-                           <th>#</th>
-                        </tr>
-                     </thead>
+                  </div>
 
-                     <tbody>
+                  <div class="box-section">
+                     <h2 class="add-button"> <span>Prices</span></h2>
+                     <ul id="price-list">
 
-                     </tbody>
-                  </table>
+                     </ul>
+                  </div>
+                  <div class="box-section">
+                     <h2 class="add-button">
+                        <span>Roles</span>
+                        <span class="add-role-btn">
+                           <span>Admin<i class="fa fa-plus" title="Add more"></i></span>
+                           <span>Basic<i class="fa fa-plus" title="Add more"></i></span>
+                        </span>
+                     </h2>
+                     <ul id="users-list">
 
+                     </ul>
+                  </div>
+                  <div class="box-section">Section 4</div>
                </div>
-
             </div>
+
             <div class="top-sales box">
                <div class="header">
                   <div class="qrbox">
@@ -129,9 +135,9 @@
 
 
 
-  
-  <div class="toast-overlay" id="toast-overlay"></div>
- <script type="text/javascript" th:src="@{/js/auth.js}"></script>
+
+   <div class="toast-overlay" id="toast-overlay"></div>
+   <script type="text/javascript" th:src="@{/js/auth.js}"></script>
    <script type="text/javascript" th:src="@{/js/toast.js}"></script>
 
    <script type="text/javascript" th:src="@{/js/jquery-3.6.4.min.js}"></script>
@@ -139,6 +145,7 @@
    <script type="text/javascript" th:src="@{/js/menu.js}"></script>
    <script type="text/javascript" th:src="@{/js/search.js}"></script>
    <script type="text/javascript" th:src="@{/js/qrCode.js}"></script>
+   <script type="text/javascript" th:src="@{/js/settings.js}"></script>
    <script type="text/javascript" th:src="@{/js/sweetAlertV2.js}"></script>
 
 

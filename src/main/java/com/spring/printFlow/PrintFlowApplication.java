@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("com.spring.printFlow.config")
 @ComponentScan("com.spring.printFlow.components")
 @SpringBootApplication
+
 public class PrintFlowApplication {
 
 	public static void main(String[] args) {

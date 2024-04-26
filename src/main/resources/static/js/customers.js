@@ -27,14 +27,14 @@ function fetchCustomers() {
 
             $('#customer-list').append(
                '<li style="font-size:11px">' +
-               '<a href="/dashboard/preview-customer-files?customer=' + customer._id + '"  class="customer-item" data-file="' + customer.fileUrl + '">' +
+               '<a href="/dashboard/preview-customer-files?customer=' + customer.id + '"  class="customer-item" data-file="' + customer.fileUrl + '">' +
                '<div class="preview-container">' +
                getFilePreviewHTML(customer.fileUrl) + // Get preview based on file type
                '</div>' +
                '<span class="product">' + customer.name + '</span>' +
                '</a>' +
                '<span class="price">Date : ' + formatDate(customer.createdAt) + '</span>' +
-               '<span class="price trash"><i class="fa fa-trash" onclick="deleteCustomers(\'' + customer._id + '\')"></i></span>' +
+               '<span class="price trash"><i class="fa fa-trash" onclick="deleteCustomers(\'' + customer.id + '\')"></i></span>' +
                '</li>'
             );
 

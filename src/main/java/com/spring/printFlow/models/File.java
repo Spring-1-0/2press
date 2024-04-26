@@ -15,7 +15,7 @@ public class File {
    private String status;
    private Long pages;
    private String activity;
-   private Float price;
+   private Double price;
    private long copies;
    private String color;
    private String message;
@@ -27,7 +27,7 @@ public class File {
    }
 
    public File(String name, String status, String cusRefId,
-         String type, long pages, String activity, Float price,
+         String type, long pages, String activity, Double price,
          Long copies, String color, String message) {
       this.name = name;
       this.cusRefId = cusRefId;
@@ -43,11 +43,11 @@ public class File {
       this.operatedAt = new Date();
    }
 
-   public String get_id() {
+   public String getId() {
       return _id;
    }
 
-   public void set_id(String _id) {
+   public void setid(String _id) {
       this._id = _id;
    }
 
@@ -95,7 +95,7 @@ public class File {
       return operatedAt;
    }
 
-   public void setCreated_at(Date createdAt) {
+   public void setCreatedAt(Date createdAt) {
       this.createdAt = createdAt;
    }
 
@@ -115,11 +115,11 @@ public class File {
       this.activity = activity;
    }
 
-   public Float getPrice() {
+   public Double getPrice() {
       return price;
    }
 
-   public Float setPrice(Float price) {
+   public Double setPrice(Double price) {
       return this.price = price;
    }
 

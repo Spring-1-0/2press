@@ -107,9 +107,8 @@ public class UserController {
 
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
                 Files.copy(file.getInputStream(), Paths.get(uploadDir, fileName), StandardCopyOption.REPLACE_EXISTING);
-                LOGGER.info("Received file upload request. File name: {}", fileName);
                 // Create a new User with the profile name
-                User user = new User(username, location, fileName, tel, hashedPassword, usermail);
+                User user = new User(username, location, fileName, tel, hashedPassword, usermail, "Basic");
                 // Send user data to userService for saving
                 userService.saveUser(user);
                 // Return a success response with the saved user
@@ -135,7 +134,6 @@ public class UserController {
     // Delete user
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete(@RequestParam(name = "_id") String _id) {
-        LOGGER.info("Controller: delete users...");
 
         try {
             // Fetch the user by _id before deleting
@@ -354,4 +352,34 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update/role")
+    public ResponseEntity<?> updateUserRole(
+            @RequestParam("_id") String _id,
+            @RequestParam("role") String role) {
+        try {
+
+            // Check if the user with the given _id exists
+            Optional<User> existingUserOptional = userService.findById(_id);
+            if (existingUserOptional.isPresent()) {
+
+                User existingUser = existingUserOptional.get();
+                existingUser.setRole(role);
+                // Save the updated user
+                userService.updateById(existingUser);
+                return ResponseEntity.ok().body("User updated successfully");
+
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with that id");
+
+        } catch (Exception error) {
+            // Handle or log the exception
+            error.printStackTrace();
+            LOGGER.error("Error saving user: {}", error.getMessage(), error);
+
+            // Return an error response with a message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something happened updating user, Please try again");
+        }
+
+    }
 }

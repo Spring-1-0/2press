@@ -22,11 +22,11 @@ public class AccessToken {
         this.expiredAt = LocalDate.now().plusDays(1); 
     }
 
-    public String get_id() {
+    public String getId() {
         return _id;
      }
   
-     public void set_id(String _id) {
+     public void setid(String _id) {
         this._id = _id;
      }
 

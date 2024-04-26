@@ -53,7 +53,6 @@ public class AuthController {
 
             // Check if the user with the given usermail exists
             User existingUserOptional = userService.getUserByUsermail(usermail);
-            LOGGER.info("Controller: Auth  logginin user: " + existingUserOptional);
 
             if (existingUserOptional != null) {
 
@@ -68,19 +67,19 @@ public class AuthController {
                 if (isPasswordCorrect) {
                     existingUserOptional.setLastVisit(new Date()); // Set the updatedAt field to
                     // the current date
-                    tokenService.deleteAccessTokenByUser(existingUserOptional.get_id());
+                    tokenService.deleteAccessTokenByUser(existingUserOptional.getId());
 
                     String token = Random();
                     String hashedToken = ValidationController.hashToken(token);
                     AccessToken accessToken = new AccessToken(existingUserOptional.getUsermail(), hashedToken,
-                            existingUserOptional.get_id());
+                            existingUserOptional.getId());
                     tokenService.createAccessToken(accessToken);
                     // Map<String, Object> responseBody = new HashMap<>();
                     // responseBody.put("name", "your_name");
                     // responseBody.put("token", token);
 
                     // Return ResponseEntity with the Map as the body
-                    return ResponseEntity.ok().body(existingUserOptional.get_id() + "|" + token);
+                    return ResponseEntity.ok().body(existingUserOptional.getId() + "|" + token);
 
                 } else {
 

@@ -30,25 +30,25 @@ public class User {
 
     // constructor
     // Constructor with required fields
-    public User(String username, String location, String profile, String tel, String password, String usermail) {
+    public User(String username, String location, String profile, String tel, String password, String usermail, String role) {
         this.username = username;
         this.location = location;
         this.profile = profile;
         this.tel = tel;
         this.password = password;
         this.usermail = usermail;
-        this.role = "ADMIN";
+        this.role = role;
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.lastVisit = new Date();
     }
 
     // Getters and setters...
-    public String get_id() {
+    public String getId() {
         return _id;
     }
 
-    public void set_id(String _id) {
+    public void setid(String _id) {
         this._id = _id;
     }
 
@@ -112,7 +112,7 @@ public class User {
         return createdAt;
     }
 
-    public void setCreated_at(Date createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

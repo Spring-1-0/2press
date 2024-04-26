@@ -28,7 +28,7 @@ function fetchFeedbacks() {
             row.append($("<td>").text(user.name));
             row.append($("<td>").text(user.message));
             // Create a button with a data attribute to store the _id
-            var buttondel = $("<button>").html('<i class="fa fa-trash"></i>').addClass("del-btn").attr("data-id", user._id).attr("title", "Delete");
+            var buttondel = $("<button>").html('<i class="fa fa-trash"></i>').addClass("del-btn").attr("data-id", user.id).attr("title", "Delete");
 
             // Attach a click event handler to the button
             buttondel.click(function () {
@@ -50,7 +50,7 @@ function fetchFeedbacks() {
                }).then((result) => {
                   if (result.isConfirmed) {
 
-                     fetch(`/api/customers/feedback/delete?_id=${user._id}`, {
+                     fetch(`/api/customers/feedback/delete?_id=${user.id}`, {
                         method: 'DELETE',
                         headers: {
                            'Authorization': `Bearer ${feddback_token}`,
