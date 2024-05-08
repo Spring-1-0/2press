@@ -138,63 +138,64 @@ window.onload = function () {
          dataPoints: []
       }]
    };
+
    function updateChart() {
-         // Initialize empty objects to store total amounts for each activity
-         const pendingTotals = {};
-         const successfulTotals = {};
-         const failedTotals = {};
+      // Initialize empty objects to store total amounts for each activity
+      const pendingTotals = {};
+      const successfulTotals = {};
+      const failedTotals = {};
 
-         // Calculate total amounts for each activity based on status
-         salesData.forEach(sale => {
-            const activity = sale.activity.toLowerCase();
-            const amount = parseFloat(sale.amount);
-            const status = sale.status.toLowerCase();
+      // Calculate total amounts for each activity based on status
+      salesData.forEach(sale => {
+         const activity = sale.activity.toLowerCase();
+         const amount = parseFloat(sale.amount);
+         const status = sale.status.toLowerCase();
 
-            if (status === 'pending') {
-               if (pendingTotals.hasOwnProperty(activity)) {
-                  pendingTotals[activity] += amount;
-               } else {
-                  pendingTotals[activity] = amount;
-               }
-            } else if (status === 'successful') {
-               if (successfulTotals.hasOwnProperty(activity)) {
-                  successfulTotals[activity] += amount;
-               } else {
-                  successfulTotals[activity] = amount;
-               }
-            } else if (status === 'failed') {
-               if (failedTotals.hasOwnProperty(activity)) {
-                  failedTotals[activity] += amount;
-               } else {
-                  failedTotals[activity] = amount;
-               }
+         if (status === 'pending') {
+            if (pendingTotals.hasOwnProperty(activity)) {
+               pendingTotals[activity] += amount;
+            } else {
+               pendingTotals[activity] = amount;
             }
-         });
+         } else if (status === 'successful') {
+            if (successfulTotals.hasOwnProperty(activity)) {
+               successfulTotals[activity] += amount;
+            } else {
+               successfulTotals[activity] = amount;
+            }
+         } else if (status === 'failed') {
+            if (failedTotals.hasOwnProperty(activity)) {
+               failedTotals[activity] += amount;
+            } else {
+               failedTotals[activity] = amount;
+            }
+         }
+      });
 
-         // Convert the pendingTotals object into an array of data points for pending sales
-         const pendingDataPoints = Object.entries(pendingTotals).map(([label, y]) => ({ label, y, indexLabel: "{y}", color: "#FFD700" }));
+      // Convert the pendingTotals object into an array of data points for pending sales
+      const pendingDataPoints = Object.entries(pendingTotals).map(([label, y]) => ({ label, y, indexLabel: "{y}", color: "#FFD700" }));
 
-         // Convert the successfulTotals object into an array of data points for successful sales
-         const successfulDataPoints = Object.entries(successfulTotals).map(([label, y]) => ({ label, y, indexLabel: "{y}", color: "#32CD32" }));
+      // Convert the successfulTotals object into an array of data points for successful sales
+      const successfulDataPoints = Object.entries(successfulTotals).map(([label, y]) => ({ label, y, indexLabel: "{y}", color: "#32CD32" }));
 
-         // Convert the failedTotals object into an array of data points for failed sales
-         const failedDataPoints = Object.entries(failedTotals).map(([label, y]) => ({ label, y, indexLabel: "{y}", color: "#FF0000" }));
+      // Convert the failedTotals object into an array of data points for failed sales
+      const failedDataPoints = Object.entries(failedTotals).map(([label, y]) => ({ label, y, indexLabel: "{y}", color: "#FF0000" }));
 
-         // Merge pending, successful, and failed data points
-         const dataPoints = [...pendingDataPoints, ...successfulDataPoints, ...failedDataPoints];
+      // Merge pending, successful, and failed data points
+      const dataPoints = [...pendingDataPoints, ...successfulDataPoints, ...failedDataPoints];
 
-         // Update the chart options with the new data points
-         options.data[0].dataPoints = dataPoints;
+      // Update the chart options with the new data points
+      options.data[0].dataPoints = dataPoints;
 
-         // Render the updated chart
-         $("#chartContainer").CanvasJSChart(options);
-      }
-
-      updateChart();
-
-      // setInterval(function () { updateChart() }, 500);
-
+      // Render the updated chart
+      var chart = new CanvasJS.Chart("chartContainer", options);
+      chart.render();
    }
+
+   // Call updateChart() to initially render the chart
+   updateChart();
+};
+
 
    async function filterTable() {
       const { value: formValues } = await Swal.fire({
