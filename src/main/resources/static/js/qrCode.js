@@ -21,7 +21,7 @@ qrcode.makeCode(baseUrl + "/upload");
 //    // Write the QR code HTML content to the iframe
 //    var qrCodeContent = document.querySelector('.qrcode').outerHTML;
 //    var iframeDoc = iframe.contentWindow.document;
-//    iframeDoc.write('<html><head><title>PrintFlow</title><style>@media print { .qrcode { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); } }</style></head><body><h1>Scan QR Code to transfer Files</h1>' + qrCodeContent + '</body></html>');
+//    iframeDoc.write('<html><head><title>TWO-PRESS</title><style>@media print { .qrcode { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); } }</style></head><body><h1>Scan QR Code to transfer Files</h1>' + qrCodeContent + '</body></html>');
 
 //    // Print the iframe content
 //    iframe.contentWindow.print();
@@ -40,7 +40,7 @@ function printQRCode() {
   // Write the QR code HTML content to the iframe
   var qrCodeContent = document.querySelector(".qrcode").outerHTML;
   var htmlContent =
-    "<html><head><title>PrintFlow</title><style>@media print { .qrcode { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); } }</style></head><body><h1>Scan QR Code to transfer Files</h1>" +
+    "<html><head><title>TWO-PRESS</title><style>@media print { .qrcode { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); } }</style></head><body><h1>Scan QR Code to transfer Files</h1>" +
     qrCodeContent +
     "</body></html>";
   iframe.srcdoc = htmlContent;
